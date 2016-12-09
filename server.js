@@ -9,7 +9,7 @@ function onConnection(ws){
     const id = uuid();
     ws._id = id;
 
-    connections.set(uuid, ws);
+    connections.set(id, ws);
 
     ws.send(`User(id=${id}) connected!`);
     connected++;
