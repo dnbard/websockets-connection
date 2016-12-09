@@ -19,5 +19,8 @@ node client %PATH-TO-SERVER%
 
 ## Results:
 
-* `uws` - Users connected: 31400, memory used: 120 MB
+* `uws`
+  * Users connected: 31400, memory used: 120 MB (after GC)
+  * Users connected: 16040, memory used: 127 MB (before GC)
+  * Users connected: 16040, memory used: 59 MB (after GC)
 * `ws` - Users connected: 16040, memory used: 2534 MB
