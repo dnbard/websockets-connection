@@ -23,8 +23,6 @@ var bytesReceived = 0;
 function onMessage(payload){
     messagesReceived ++;
     bytesReceived += (payload || '').length;
-    // console.log(JSON.stringify(payload), null, 2);
-    // process.exit(1);
 }
 
 function onConnection(ws){
@@ -50,19 +48,26 @@ function formatMemoryOutput(data){
     return Math.round(data / 1000000);
 }
 
+var oldTraffic = 0;
+function formatTrafficUsage(t){
+    return t > 1000000000 ? (Math.ceil(t / 10000000) / 100 + 'GB') :
+        t > 1000000 ? (Math.ceil(t / 100000) / 10 + 'MB') :
+        t > 1000 ? (Math.ceil(t / 1000) + 'KB') :
+        t + 'b';
+}
+
 function reportMemoryUsage(){
     const memory = process.memoryUsage();
     const used = formatMemoryOutput(memory.rss);
-    const traffic = bytesReceived > 1000000000 ? (Math.ceil(bytesReceived / 10000000) / 100 + 'GB') :
-        bytesReceived > 1000000 ? (Math.ceil(bytesReceived / 100000) / 10 + 'MB') :
-        bytesReceived > 1000 ? (Math.ceil(bytesReceived / 1000) + 'KB') :
-        bytesReceived + 'b';
-
+    const traffic = formatTrafficUsage(bytesReceived);
+    const diffTraffic = formatTrafficUsage(bytesReceived - oldTraffic);
+    oldTraffic = bytesReceived;
 
     process.stdout.write('\033c');
     console.log(`Opened ports: ${portsOpened.join(', ')}`);
     console.log(`Users connected: ${connected}, memory used: ${used} MB`);
     console.log(`Messages received: ${messagesReceived}, ${traffic}`);
+    console.log(`Bandwidth: ${diffTraffic}/s`);
 }
 
 reportMemoryUsage();
